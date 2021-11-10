@@ -4,4 +4,4 @@ The files in this repository are practical session's documentation to be used in
 
 Please see: 
 - https://github.com/arifpras/KelasData
-- https://arifpras.github.io/BasicModeling/
+- https://arifpras.github.io/BasicModelling/
