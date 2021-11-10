@@ -303,6 +303,26 @@ library(corrr)
 )
 ```
 
+# Unit Root Test
+```{r unit-root}
+pacman::p_load(tidyr, tseries)
+
+(
+  unrt01 <- db01 %>%
+    group_by(obsvar) %>%
+    summarise(
+      box.pvalue = Box.test(obsval, lag=1, type="Ljung-Box")$p.value,
+      box = Box.test(obsval, lag=1, type="Ljung-Box")$p.value<0.05,
+      adf.pvalue = adf.test(obsval, alternative = "stationary")$p.value,
+      adf = adf.test(obsval, alternative = "stationary")$p.value<0.05,
+      kpss.pvalue=kpss.test(obsval)$p.value,
+      kpss=kpss.test(obsval)$p.value>0.05
+      )
+)
+
+#source: https://stackoverflow.com/questions/44362577/how-can-do-multiple-stationary-tests-for-multiple-timeseries-in-a-dataframe
+```
+
 # Simple Regressions
 ## Modelling: base
 ```{r ols01-base}
