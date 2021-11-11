@@ -319,11 +319,14 @@ pacman::p_load(tidyr, tseries)
       kpss=kpss.test(obsval)$p.value>0.05
       )
 )
-
-#source: https://stackoverflow.com/questions/44362577/how-can-do-multiple-stationary-tests-for-multiple-timeseries-in-a-dataframe
 ```
 
 # Simple Regressions
+## Initial specifications
+$$ \text{Sales}_t = \alpha_0 + \alpha_1 \text{Chapters}_t + \alpha_2 \text{LastMovie}_t + \alpha_3 \text{VIX index}_t + \upsilon_t  $$
+
+$$ \text{Sales}_t = \beta_0 + \beta_1 \text{Pages}_t + \beta_2 \text{LastMovie}_t + \beta_3 \text{VIX index}_t + \epsilon_t  $$
+
 ## Modelling: base
 ```{r ols01-base}
 ols01bs <- lm(sales_mio ~ chapters + last_movie_days + vixi_avg, 
@@ -337,6 +340,57 @@ ols02bs <- lm(sales_mio ~ pages + last_movie_days + vixi_avg,
                 data = op_sales)
 
 summary(ols02bs)
+```
+
+## Modelling: interaction
+```{r ols03-interaction-ch}
+ols03bs <- lm(sales_mio ~ chapters + last_movie_days + vixi_avg + 
+                last_movie_days * vixi_avg, 
+                data = op_sales)
+
+summary(ols03bs)
+```
+
+```{r ols04-interaction-pg}
+ols04bs <- lm(sales_mio ~ pages + last_movie_days + vixi_avg + 
+                last_movie_days * vixi_avg, 
+                data = op_sales)
+
+summary(ols04bs)
+```
+
+## Modelling: lagging
+```{r ols05-lag-ch}
+ols05bs <- lm(sales_mio ~ chapters + lag(chapters, n = 1L) + 
+                last_movie_days + vixi_avg + last_movie_days * vixi_avg, 
+                data = op_sales)
+
+summary(ols05bs)
+```
+
+```{r ols06-lag-ch}
+ols06bs <- lm(sales_mio ~ pages + lag(pages, n = 1L) + 
+                last_movie_days + vixi_avg + last_movie_days * vixi_avg, 
+                data = op_sales)
+
+summary(ols06bs)
+```
+
+## Modelling: 1st difference
+```{r ols07-diff-ch}
+ols07bs <- lm(diff(sales_mio, lag = 1) ~ diff(chapters, lag = 1) + 
+                diff(last_movie_days, lag = 1) + diff(vixi_avg, lag = 1), 
+                data = op_sales)
+
+summary(ols07bs)
+```
+
+```{r ols08-diff-pg}
+ols08bs <- lm(diff(sales_mio, lag = 1) ~ diff(pages, lag = 1) + 
+                diff(last_movie_days, lag = 1) + diff(vixi_avg, lag = 1), 
+                data = op_sales)
+
+summary(ols08bs)
 ```
 
 ## Modelling: dplyr
@@ -516,7 +570,6 @@ plot(comp)
 ```
 
 # Clearing
-
 ```{r clearing-last, echo=TRUE}
 #clearing the environment
 ls()
