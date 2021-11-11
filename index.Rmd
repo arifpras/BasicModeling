@@ -225,10 +225,9 @@ pacman::p_load(colorspace)
 ```
 
 # Descriptive statistics
-
 ## Summary: skim
 ```{r summ-skim}
-op_sales %>% select(release_date, pages, chapters, sales_mio, last_movie_days, vixi_avg) %>% 
+op_sales %>% select(pages, chapters, sales_mio, last_movie_days, vixi_avg) %>% 
   skimr::skim()
 ```
 
@@ -281,8 +280,7 @@ pacman::p_load(parameters)
            "Pages" = pages,
            "Total Sales (in millions)" = sales_mio,
            "VIX Index (in average)" = vixi_avg) %>%
-    describe_distribution() %>% 
-    t()
+    describe_distribution()
 )
 ```
 
